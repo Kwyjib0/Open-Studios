@@ -23,10 +23,6 @@
 {% block content %}
     <h1 style="font-size: 2.5rem; text-align: center;">{{ image.name | title }}</h1>
     <div>
-        {% if image.url %}
-            <img src="{{ image.url }}"/><br/>
-        {% else %}
-            <img src="media/{{ image.upload }}"/><br/>
-        {% endif %}
-</div>
+        <img src="{{ image.upload.url }}" alt="image unavailable"><br/>
+    </div>
 {% endblock %}

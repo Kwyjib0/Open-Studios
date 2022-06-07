@@ -30,10 +30,10 @@
         <p>{{ exhibit.description }}</p>
         <br>
         <div class="box">
-            {% for image in images %}
+            {% for image in exhibit.pics.all %}
                 <div style="display: block; margin-right: auto; margin-left: auto;  padding: 6rem;">
                     <a href="{% url 'image' image.name %}">
-                        <img src="{{ image.url }}" height="300" />
+                        <img src="{{ image.upload.url }}" height="300" />
                     </a>    
                     <br>
                     <h6 style="color: #ffffff; font-size: .875rem; margin-top: .5rem; text-decoration: none;">{{ image.name }}</h6>
@@ -44,9 +44,10 @@
 
 
     <h2 style="color: #888888; font-size: 2rem">Artist: {{ exhibit.artist_name }}</h2>
-        <p>{{ exhibit.bio }}</p>
-        <hr>
-        <h2 style="color: #ffffff;">Share Your Comments:</h2>
+    <img src="{{ exhibit.profile.profile_image.url }}" height="300" alt="profile picture"/>
+    <p>{{ exhibit.bio }}</p>
+    <hr>
+    <h2 style="color: #ffffff;">Share Your Comments:</h2>
     <div class="box">
         <form action="{% url 'featured' %}" method="POST">
             {% csrf_token %}

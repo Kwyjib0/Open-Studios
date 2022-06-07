@@ -56,7 +56,6 @@ def main(request):
         if image.featured:
             images.append({
                 'id' : image.image_id, 
-                'url' : image.url,
                 'name' : image.name
             })
 
@@ -71,11 +70,13 @@ def main(request):
 def show_image(request, name):
     if request.method == 'GET':
         image = Image()
-        
         # It iterates through all of the images in the database, and then checks if each image has a name that matches the given name.
-        for pic in Image.objects.all().order_by('image_id'):
+        print(name)
+        for pic in Image.objects.all().order_by('image_id'):               
+
             if pic.name == name:
-                image = pic
+                image = pic 
+
         # If so, it returns the template displaying the image.
         return render(request, 'image.html', context = {'image' : image})
 
@@ -95,7 +96,6 @@ def featured(request):
         for image in featured.pics.all().order_by('image_id'):
             images.append({
                 'id' : image.image_id, 
-                'url' : image.url,
                 'name' : image.name})
         
         comments = []
@@ -142,18 +142,20 @@ def upcoming(request):
     if request.method == 'GET':
         # then it will use the Exhibit.objects.exclude() method to find all of the exhibits that are not featured or revealed.
         exhibits = Exhibit.objects.exclude(featured = True).exclude(revealed = True)
-        
+
         art = []
         # Next, for each exhibit in 'exhibits', we iterate through its images using the pics attribute and check if they are featured.
-        for exhibit in exhibits:
+        for exhibit in exhibits:            
             for i in exhibit.pics.all():
                 if i.featured:
+                    print(i)
                     # If they are, then we add their url, name, id number (the image_id), and collection information to our list of upcoming exhibits.
                     art.append({
-                            'url' : i.url, 
                             'name' : i.name, 
                             'id' : i.image_id,
                             'collection' : exhibit.exhibit_id})
+
+        
         # Finally the template is displayed to the user listing the exhibits that will be featured in time.
         return render(request = request, template_name = 'upcoming.html', context = {'exhibits' : exhibits, 'images' : art})
 
@@ -163,28 +165,28 @@ def about(request):
     # The code starts by defining a list of profiles.
     profiles = [{
         'name' : 'Llukkah Delos Reyes', 
-            'image' : '/static/media/images/llukkah.jpg', 
+            'image' : '/static/images/pics/llukkah.jpg', 
             'git' : 'https://www.github.com/llukkah',
             'linkedin' : 'https://www.linkedin.com/in/llukkahrey?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BPVPIS6RuS1mFA2Oz%2BiCvTA%3D%3D'
         }, 
         {'name' : 'Chris Linton',
-            'image' : '/static/media/images/chris.jpg', 
+            'image' : '/static/images/pics/chris.jpg', 
             'git' : 'https://github.com/Kwyjib0',
             'linkedin' : 'https://www.linkedin.com/in/christopher-linton1?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3B90XwWnipSSGg%2Bj1Y%2BC%2BfEw%3D%3D'
         }, 
         {'name' : 'Lee Harvey',
-            'image' : '/static/media/images/lee.jpg', 
+            'image' : '/static/images/pics/lee.jpg', 
             'git' : 'https://github.com/VirtDev337', 
             'linkedin' : 'https://www.linkedin.com/in/lee-harvey-jr?lipi=urn%3Ali%3Apage%3Ad_flcreateagship3_profile_view_base_contact_details%3BIvwSNWutSqaVtbFzP0%2BtHg%3D%3D'
         }, 
         {'name' : 'Jason Rolle',
-            'image' : '/static/media/images/jason.jpg',
+            'image' : '/static/images/pics/jason.jpg',
             'git' : 'https://github.com/JasonRolle1990',
             'linkedin' : 'https://www.linkedin.com/in/jasonrolle1990?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3Bculc7Op7S3esL9F80ZfMhw%3D%3D'
         }]
 
     # The code then defines a list of links.
-    links = [{'name': 'Facebook', 'icon': '/static/media/images/facebook.png', 'site': 'https://www.facebook.com'}, {'name': 'Instagram', 'icon': '/static/media/images/instagram.png', 'site': 'https://www.instagram.com/'}, {'name': 'Twitter', 'icon': '/static/media/images/twitter.png', 'site': 'https://twitter.com/'}
+    links = [{'name': 'Facebook', 'icon': '/static/images/social_media/facebook.png', 'site': 'https://www.facebook.com'}, {'name': 'Instagram', 'icon': '/static/images/social_media/instagram.png', 'site': 'https://www.instagram.com/'}, {'name': 'Twitter', 'icon': '/static/images/social_media/twitter.png', 'site': 'https://twitter.com/'}
     ]
     
     # Then the template about.html is returned with the listed information to be presented.
@@ -214,16 +216,15 @@ def create_image(request):
     
     if request.method == 'POST':
         # The code starts by defining a variable called form, which is the object that is storing data from the image form.
-        form = ImageForm(request.POST)
+        form = ImageForm(request.POST, request.FILES)
         if form.is_valid():  
             # Next it assigns the cleaned data to variables that match the attributes in a Image object.
             name = form.cleaned_data['name']
-            url = form.cleaned_data['url']
             upload = form.cleaned_data['upload']
             featured = form.cleaned_data['featured']
             
             # Then it creates a new Image instance with its own set of fields.
-            Image.objects.create(name = name, url = url, upload = upload, featured = featured)
+            Image.objects.create(name = name, upload = upload, featured = featured)
             
             # Finally it returns to the create exhibit page.
             return HttpResponseRedirect(reverse(action))
@@ -238,6 +239,8 @@ def create_edit_image(request, image_id):
     
     # Next it accessed the global variable path that has the dynamic uri for the exhibit being edited.
     global path
+    print("Here's the path")
+    print(path)
     
     # Then we check the global variable path for upcoming to define the page that the user will be redirected to depending on how this funcion was accessed.
     if 'upcoming' in path:
@@ -257,7 +260,6 @@ def create_edit_image(request, image_id):
         form = ImageForm(initial = {
             'image_id' : image.image_id,
             'name' : image.name, 
-            'url' : image.url, 
             'upload' : image.upload,
             'featured' : image.featured})
         
@@ -266,19 +268,18 @@ def create_edit_image(request, image_id):
     
     if request.method == 'POST':
         # The code starts by defining a variable called form, which is the object that is storing data from the image form.
-        form = ImageForm(request.POST)
+        form = ImageForm(request.POST, request.FILES)
         
         # The code checks if the form has been validated or not.
         if form.is_valid():
             if 'save' in request.POST:
                 # If it has, then some data from the form are cleaned up and saved in an instance of Image called image.
                 name = form.cleaned_data['name']
-                url = form.cleaned_data['url']
                 upload = form.cleaned_data['upload']
                 featured = form.cleaned_data['featured']
                 
                 image = Image.objects.filter(image_id = image_id)
-                image.update(name = name, url = url, upload = upload, featured = featured)
+                image.update(name = name, upload = upload, featured = featured)
                 
                 
                 path = ''
@@ -325,16 +326,15 @@ def upcoming_create_image(request):
     
     if request.method == 'POST':
         # The code starts by defining a variable called form, which is the object that is storing data from the image form.
-        form = ImageForm(request.POST)
+        form = ImageForm(request.POST, request.FILES)
         if form.is_valid():
             # Next it assigns the cleaned data to variables that match the attributes in a Image object.
             name = form.cleaned_data['name']
-            url = form.cleaned_data['url']
             upload = form.cleaned_data['upload']
             featured = form.cleaned_data['featured']
             
             # Then it creates a new Image instance with its own set of fields.
-            Image.objects.create(name = name, url = url, upload = upload, featured = featured)
+            Image.objects.create(name = name, upload = upload, featured = featured)
             
             # Next it accessed the global variable path that has the dynamic uri for the exhibit being edited.
             global path

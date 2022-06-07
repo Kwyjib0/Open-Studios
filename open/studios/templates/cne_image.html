@@ -42,7 +42,7 @@
     {% elif action == 'upcoming' %}   
         <form action="{% url 'addImage' %}" method="POST" enctype="multipart/form-data">
     {% else %}   
-        <form action="{% url 'creatEImage' image.image_id %}" method="POST" enctype="multipart/form-data">
+        <form action="{% url 'createEditImage' image.image_id %}" method="POST" enctype="multipart/form-data">
     {% endif %}
 
     {% csrf_token %} 
@@ -50,8 +50,6 @@
     <center>
         <div class="fields">
             <p><label class="name">{{ form.name.name|title }}:</label><span>{{ form.name.as_widget }}</span></p>
-            <p class="urlp"><label class="url">{{ form.url.name|title }}:</label><span>{{ form.url.as_widget }}</span></p>
-            <p>or</p>
             <p class="urlp"><label class="url">{{ form.upload.name|title }}:</label><span>{{ form.upload.as_widget }}</span></p>
             <label class="featured">{{ form.featured.name|title }}: {{ form.featured.as_widget }}</label>
         </div>

@@ -58,29 +58,25 @@
 				{% endif %}
 			</div>
 			<div class="box">
+				<p>{{action}}</p>
 				{% if action == "edit" %} 
 					{% for image in exhibit.pics.all %}
-						<a href="{% url 'creatEImage' image.image_id %}" style="text-decoration: none">
+						<a href="{% url 'createEditImage' image.image_id %}" style="text-decoration: none">
 							<div style="display: block; padding: 5rem">
 								{% if image.featured %}
 									<span class="featured">
 										<i>Featured Image</i>
 									</span>
 								{% endif %}
-								{% if image.url %}
-									<img src="{{ image.url }}"/><br/>
-								{% else %}
-									<img src="media/{{ image.upload }}"/><br/>
-								{% endif %}
+								<img src="{{ image.upload.url }}"/><br/>
 								<label>{{ image.name }}</label>
 							</div>
 						</a>
 					{% endfor %} 
-				{% endif %} 
 				
-				{% if images != null %} 
-					{% for image in images %}
-						<a href="{% url 'creatEImage' image.image_id  %}">
+				{% elif images != null %}
+					{% for image in exhibit.pics.all %}
+						<a href="{% url 'createEditImage' image.image_id  %}">
 							<div style=" display: block;
 									margin-top: 0.3rem;
 									margin-bottom: 0.3rem;">
@@ -89,11 +85,7 @@
 										<i>Featured Image</i>
 									</span><br/>
 								{% endif %}
-								{% if image.url %}
-									<img src="{{ image.url }}"/><br/>
-								{% else %}
-									<img src="media/{{ image.upload }}"/><br/>
-								{% endif %}
+								<img src="{{ image.upload.url }}"/><br/>
 								<label>{{ image.name }}</label>
 							</div>
 						</a>

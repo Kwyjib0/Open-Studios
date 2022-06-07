@@ -15,11 +15,6 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
-STATIC_ROOT = os.path.join(BASE_DIR, 'root')
-MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -60,7 +55,9 @@ ROOT_URLCONF = 'open.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(MEDIA_ROOT, 'images/')], 
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,14 +120,26 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+STATIC_URL = '/static/'
+# tells django how to connect image url
+# MEDIA_URL = '/images/'
+MEDIA_URL = '/media/'
+# tells django where to upload user generated content
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
+
+
+# STATIC_DIR = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'root')
+
+# not a custom variable, list letting django know route to static files
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, ''),
+    # os.path.join(BASE_DIR, 'media'), # IS THIS NEEDED?
     os.path.join(BASE_DIR, 'static'),
-    os.path.join(BASE_DIR, MEDIA_URL),
-    os.path.join(BASE_DIR, 'media/images'),
 ]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

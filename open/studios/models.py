@@ -15,6 +15,9 @@ class Tag(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, null=True, on_delete = models.CASCADE)
+    profile_image = models.ImageField(
+        null=True, blank=True, upload_to='images/profiles/', default="images/profiles/user-default.png")
+
 
     class Meta:
         verbose_name_plural = 'Profiles'
@@ -57,11 +60,10 @@ class Exhibit(models.Model):
 
 class Image(models.Model):
     image_id = models.AutoField(primary_key = True)
-    url = models.URLField(max_length = 200, null = True, blank = True)
     featured = models.BooleanField(default = False)
     name = models.CharField(max_length = 255)
     # File Upload
-    upload = models.ImageField(upload_to = "images/", blank = True, null = True, max_length=255)
+    upload = models.ImageField(blank = True, null = True, upload_to='images/art')
     
     # Linked class
     exhibit_name = models.ForeignKey(Exhibit, related_name = 'pics', null = True, on_delete = models.DO_NOTHING)

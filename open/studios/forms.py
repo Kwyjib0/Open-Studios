@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import ModelForm
 from django.forms.widgets import HiddenInput
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -7,7 +8,6 @@ from .models import *
 
 class ImageForm(forms.Form):
     name = forms.CharField(max_length = 255, required = True)
-    url = forms.URLField(label = "Image URL", max_length = 200, required = False)
     upload = forms.ImageField(required = False)
     featured = forms.BooleanField(widget = forms.CheckboxInput, required = False)
     
@@ -15,7 +15,6 @@ class ImageForm(forms.Form):
         parent_model = Image
         fields = (
             'name', 
-            'url', 
             'upload',
             'featured')
 
@@ -57,8 +56,10 @@ class ExhibitForm(forms.Form):
     for tag in Tag.objects.all():
         choices.append((tag.tag_id, tag.name))
     tags = forms.MultipleChoiceField(choices = choices, required = False)
-    
-    description = forms.CharField(max_length = 500, widget = forms.Textarea, required=True)
+    class Meta:
+        model = Exhibit
+        fields = ['artist_name', 'email', 'website', 'bio', 'exhibit_name', 'description']
+    # description = forms.CharField(max_length = 500, widget = forms.Textarea, required=True)
 
 # Customize inherited default Django user creation form 
 class CreateUserForm(UserCreationForm):

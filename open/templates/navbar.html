@@ -1,0 +1,38 @@
+{% load static %}
+
+<header>
+    <grid-wrap class="inline">
+        <nav class="nav">
+            <a class="nav-org" href="{% url 'home' %}"><img style="width: 40px;" src="{% static 'images/logo.jpg' %} " alt="DevSearch Logo" />Open Studios</a>
+            <div class="subnav">
+                <button class="subnavbtn">
+                    Profile
+                    <div class="triangle"></div>
+                </button>
+                <div class="subnav-content-user">
+                    <a href="{% url 'register' %}">Register</a>
+                    <a href="{% url 'login' %}">Login</a>
+                    <a href="{% url 'logout' %}">Logout</a>
+                </div>
+            </div>
+            <a href="{% url 'about' %}">About</a>
+            <div class="subnav">
+                <button class="subnavbtn">
+                    Exhibits
+                    <div class="triangle"></div>
+                </button>
+                <div class="subnav-content-exhibit">
+                    <a href="{% url 'create' %}">Create</a>
+                    <a href="{% url 'featured' %}">Featured</a>
+                    <a href="{% url 'upcoming' %}">Upcoming</a>
+                </div>
+            </div>
+        </nav>
+        {% if request.user.id != None %}
+        <label class="dot"></label>
+        <span class="user">
+            <h3>Hello, {{ request.user }}</h3>
+        </span>
+        {% endif %}
+    </grid-wrap>
+</header>
